@@ -11,7 +11,7 @@ import itertools as it
 import argparse
 import logging
 
-np.warnings.filterwarnings("ignore")
+# np.warnings.filterwarnings("ignore") # this is now deprecated in numpy
 
 import pybedtools as pbt
 from itertools import permutations, combinations, product
@@ -262,7 +262,7 @@ def calc_fws(vcf, **kwargs):
 	else:
 		vcf.log.info(" [ asymptotic standard errors ]")
 	## matrices of H_px and H_sx
-	H_p = np.array(H_p, dtype = np.float).reshape(len(H_p), 1)
+	H_p = np.array(H_p, dtype = np.float64).reshape(len(H_p), 1)
 	H_s = np.ma.asanyarray(H_s)
 	#print(np.sum(H_s.mask))
 	#print(H_s.shape)
@@ -453,7 +453,7 @@ def calc_weighted_dist(vcf, **kwargs):
 	combos = list( it.combinations(range(0, len(vcf.samples)), 2) )
 	vcf.log.info("\t[{} combinations]".format(len(combos)))
 	formatter = "{:0." + str(args.digits) + "f}"
-	#D = np.zeros( (len(vcf.samples), len(vcf.samples)), dtype = np.float )
+	#D = np.zeros( (len(vcf.samples), len(vcf.samples)), dtype = np.float64 )
 	ii = 0
 	for sa,sb in combos:
 		ii += 1
@@ -538,7 +538,7 @@ def calc_malecot_ibd(vcf, **kwargs):
 	vcf.log.info("\t[{} combinations]".format(len(combos)))
 	vcf.log.info("eps = {}, maxiter = {}".format(args.tol, args.max_iter))
 	formatter = "{:0." + str(args.digits) + "f}"
-	#D = np.zeros( (len(vcf.samples), len(vcf.samples)), dtype = np.float )
+	#D = np.zeros( (len(vcf.samples), len(vcf.samples)), dtype = np.float64 )
 	ii = 0
 
 	def ibd_negloglik(f, wa, wb, plaf, inbreeding = True):
@@ -613,8 +613,8 @@ def calc_ibs_dist(vcf, **kwargs):
 
 	args = argparse.Namespace(**kwargs)
 
-	geno = vcf.add_chunk(None, args.chunk_size, np.float)
-	geno_imputed = vcf.add_chunk(None, args.chunk_size, np.float)
+	geno = vcf.add_chunk(None, args.chunk_size, np.float64)
+	geno_imputed = vcf.add_chunk(None, args.chunk_size, np.float64)
 
 	## loop on VCF and add take sample depths
 	nused = 0
@@ -948,7 +948,7 @@ def count_derived(vcf, **kwargs):
 	vcf.log.info("Counting derived alleles at level of {}".format(how_count))
 
 	## initialize counters
-	what_type = np.int if args.calls else np.float
+	what_type = np.int if args.calls else np.float64
 	counts = np.zeros(len(vcf.samples), dtype = what_type)
 	nsites = np.zeros(len(vcf.samples), dtype = np.int)
 
@@ -1438,7 +1438,7 @@ def prune_sites_by_ld(vcf, **kwargs):
 	vcf.log.info("Processing VCF file ...")
 	last_chrom = None
 	pos = []
-	geno = vcf.add_chunk(None, args.chunk_size, np.float)
+	geno = vcf.add_chunk(None, args.chunk_size, np.float64)
 
 	## while instead of for-loop to avoid gymnasitcs at ends of chrosomes
 	# while True:

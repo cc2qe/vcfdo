@@ -170,7 +170,7 @@ class VcfIterator(VCF):
 	def write_site(self, site):
 		sys.stdout.write( str(site) )
 
-	def add_chunk(self, template, size, dtype = np.float, nsamples = None):
+	def add_chunk(self, template, size, dtype = np.float64, nsamples = None):
 		if nsamples is None:
 			nsamples = self.nsamples
 		if template is None:
